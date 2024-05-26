@@ -1,0 +1,9 @@
+# simplefetch
+
+![](sf.png)
+
+## installation
+
+1. git clone https://github.com/clydeconfigs/simplefetch
+2. cd simplefetch
+3.  ``make``
