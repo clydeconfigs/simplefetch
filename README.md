@@ -13,5 +13,6 @@
 currently only supported for
 - arch
 - debian
+- void
 
 other distros don't matter so not bothering
