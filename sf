@@ -29,7 +29,7 @@ case $NAME in
     ;;
     "openSUSE"*) 
     color=2
-    packages="Packages: $(tput sgr0)$(zypper search --installed-only | wc -l), $(zypper search --installed-only | grep 'i+' | wc -l) total$(tput setaf $color)"
+    packages="Packages: $(tput sgr0)$(zypper search --installed-only | grep 'i+' | wc -l), $(zypper search --installed-only | wc -l) total$(tput setaf $color)"
     ;;    *)
     color=2
     packages="Packages: $(tput sgr0)unknown$(tput setaf $color)"
