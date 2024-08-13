@@ -1,3 +1,4 @@
+
 #!/usr/bin/bash
 
 source /etc/os-release
@@ -26,6 +27,11 @@ case $NAME in
     color=7
     packages="Packages: $(tput sgr0)$(nix-env -q | wc -l), $(nix-store --query --requisites /run/current-system/ | sort -u | wc -l) total$(tput setaf $color)"
     ;;
+    *)
+    color=2
+    packages="Packages: $(tput sgr0)no info about the package manager$(tput setaf $color)"
+    ;;
+    
 esac
 
 get_gpu () {
@@ -103,13 +109,15 @@ help() {
 -w: no wm"
 }
 
+logo="false"
+
 while [[ $# -gt 0 ]]; do
     case "$1" in
        -*)
             arg="${1#-}"
             for ((i = 0; i < ${#arg}; i++)); do
                 case "${arg:$i:1}" in
-                    v | V) echo "2.0"; exit 0;;
+                    v | V) echo "2.1"; exit 0;;
                     o) remove "$os_release"; shift;;
                     h) remove "$hostname"; shift;;
                     t) remove "$term"; shift;;
@@ -121,10 +129,11 @@ while [[ $# -gt 0 ]]; do
                     d) remove "$disk"; shift;;
                     r) remove "$ram"; shift;;
                     w) remove "$wm"; shift;;
+                    l) logo="true"; shift;;
                     h) help; exit 0;;
                 esac
             done
-            shift
+            #shift
             ;;
         *)
             echo "unknown option '$1'"
@@ -137,6 +146,8 @@ done
 test -z "$(get_gpu)" && remove "$gpu"
 
 how_many_lines=$(echo $(whoami)$(cat /proc/sys/kernel/hostname) | wc -c)
+
+if [[ "$logo" == "true" ]]; then
 case $NAME in
     "Arch Linux")
 echo -e "$(tput setaf $color)            
@@ -232,9 +243,51 @@ echo -e "
         [1;34m*[0m[1;34m*[0m[1;34m*[0m[1;34m*[0m[1;34m*[0m[1;34m*[0m[1;34m*[0m[1;34m*[0m    ****        ${element[10]} 
        [1;34m*[0m[1;34m*[0m[1;34m*[0m   [1;34m*[0m[1;34m*[0m[1;34m*[0m[1;34m*[0m     ***       ${element[11]}
                                 ${element[12]}
-       "
+       ";;
 
+    "openSUSE"*)
+echo -e "
+                                                    $(tput setaf $color)$(tput bold)$(tput setaf $color)$(whoami)$(tput sgr0)@$(tput sgr0)$(cat /proc/sys/kernel/hostname)$(tput setaf $color)
+                       ##########                   $(tput sgr0)$(for ((i=0; i<how_many_lines+1; i++)); do printf "%s" "―"; done)$(tput setaf $color)
+                  ############################      ${element[0]}   
+               ############################# ## #   ${element[1]} 
+            ############################### ### ##  ${element[2]} 
+           ############################## ###  ###  ${element[3]} 
+         ###################################     #  ${element[4]} 
+        ####        ############################    ${element[5]} 
+        ###  ######   ####     ######               ${element[6]} 
+        ### ##    ##  ###         ###               ${element[7]} 
+        ###  ####  ##   #          ###              ${element[8]} 
+         ####    ###                                ${element[9]} 
+   ######  ########      ######   #######           ${element[10]}
+####                  ####       ##      #          ${element[11]}
+###        ##     ##  ###        #### ####          ${element[12]}
+  #######  ##     ##    #######  ##                 
+      ###  ##    ###        ###  ##                
+########   ###### ##  ########    #######          
+$(tput sgr0)";;
+
+*)
 esac
+else
+echo -e "
+$(tput setaf $color)$(tput bold)$(tput setaf $color)$(whoami)$(tput sgr0)@$(tput sgr0)$(cat /proc/sys/kernel/hostname)$(tput setaf $color)
+$(tput sgr0)$(for ((i=0; i<how_many_lines+1; i++)); do printf "%s" "―"; done)$(tput setaf $color)
+${element[0]}  
+${element[1]} 
+${element[2]} 
+${element[3]} 
+${element[4]} 
+${element[5]} 
+${element[6]} 
+${element[7]} 
+${element[8]} 
+${element[9]} 
+${element[10]}
+${element[11]}
+${element[12]}
+$(tput sgr0)"
+fi
 
 lsblk -o NAME,SIZE,FSTYPE,FSUSE%,MOUNTPOINT | sed 's/  └/  └/g' | awk '
 BEGIN {
@@ -285,7 +338,7 @@ echo
 #
      
 #
-#  simplefetch / sfetch / sf 2.0
+#  simplefetch / sfetch / sf 2.1
 #  created by clyde, on 18 feb 2024 at 16:$color CET
 #
 #                     lol, 39 got replaced by $color
@@ -341,4 +394,7 @@ echo
 
     # clyde, on 6 aug 2024 03:47 CEST 
     # 2.0 patch notes: added the lsblk thing
+
+    # clyde, on 13 aug 2024 17:52 CEST 
+    # 2.1 patch notes: removed logo by default and added openSUSE
 
