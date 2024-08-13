@@ -27,9 +27,12 @@ case $NAME in
     color=7
     packages="Packages: $(tput sgr0)$(nix-env -q | wc -l), $(nix-store --query --requisites /run/current-system/ | sort -u | wc -l) total$(tput setaf $color)"
     ;;
-    *)
+    "openSUSE"*) 
     color=2
-    packages="Packages: $(tput sgr0)no info about the package manager$(tput setaf $color)"
+    packages="Packages: $(tput sgr0)$(sudo zypper search --installed-only | wc -l), $(sudo zypper search --installed-only | grep 'i+' | wc -l) total$(tput setaf $color)"
+    ;;    *)
+    color=2
+    packages="Packages: $(tput sgr0)unknown$(tput setaf $color)"
     ;;
     
 esac
